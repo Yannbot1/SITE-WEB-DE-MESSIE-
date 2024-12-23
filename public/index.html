@@ -2,45 +2,131 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sécurité Informatique</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu Snake</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 1px solid #000;
+            background-color: pink ;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .button {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        #restart {
+            margin-top: 20px;
+            background-color: #28a745;
+        }    </style>
 </head>
 <body>
-  <header>
-    <h1>Sécurité Informatique par:yann</h1>
-    <p>Protégez vos données et vos systèmes contre les menaces informatiques</p>
-  </header>
-  <main>
-    <section>
-      <h2>Types d'agression informatique</h2>
-      <ul>
-        <li>Virus : programmes malveillants qui se répliquent et causent des dommages</li>
-        <li>Ver : programmes malveillants qui se répliquent sans nécessiter d'action humaine</li>
-        <li>Trojan : programmes malveillants qui se dissimulent dans des programmes légitimes</li>
-        <li>Phishing : tentative de vol d'informations confidentielles par email ou par site web</li>
-        <li>Ransomware : logiciel malveillant qui chiffre les données et exige un paiement pour les déchiffrer</li>
-      </ul>
-    </section>
-    <section>
-      <h2>Moyens de lutte contre les agressions informatiques</h2>
-      <ul>
-        <li>Antivirus : logiciels qui détectent et éliminent les virus et autres logiciels malveillants</li>
-        <li>Firewall : systèmes qui bloquent les accès non autorisés à un réseau ou à un système</li>
-        <li>Mises à jour régulières : mise à jour des logiciels et des systèmes pour corriger les vulnérabilités</li>
-        <li>Utilisation de mots de passe forts : utilisation de mots de passe complexes et uniques pour chaque compte</li>
-        <li>Sauvegarde régulière des données : sauvegarde des données importantes pour éviter les pertes en cas d'attaque</li>
-      </ul>
-    </section>
-    <section>
-      <h2>Création de virus et d'antivirus</h2>
-      <p>Les virus sont créés par des individus ou des groupes qui veulent causer des dommages ou voler des informations. Les antivirus sont créés par des entreprises ou des individus qui veulent protéger les systèmes et les données contre les virus et autres logiciels malveillants.</p>
-      <p>Les virus sont créés en utilisant des langages de programmation tels que C, C++ ou Python. Les antivirus sont créés en utilisant des langages de programmation tels que C, C++ ou Java, ainsi que des outils de développement spécifiques.</p>
-    </section>
-  </main>
-  <footer>
-    <p>&copy; 2023 Services Informatiques Gratuits</p>
-  </footer>
-</body>
-                                                                                                 </html>
+    <canvas id="gameCanvas" width="380
+0" height="500"></canvas>
+    <div class="controls">
+        <button class="button" id="up">↑</button>
+        <div>
+            <button class="button" id="left">←</button>
+            <button class="button" id="right">→</button>
+        </div>
+        <button class="button" id="down">↓</button>
+    </div>
+        <button class="button" id="restart">Restart</button>
+
+    
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const box = 20;
+        let snake = [{ x: 9 * box, y: 9 * box }];
+        let direction = 'RIGHT';
+        let food = {
+            x: Math.floor(Math.random() * 20) * box,
+            y: Math.floor(Math.random() * 20) * box
+        };
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < snake.length; i++) {
+                ctx.fillStyle = (i === 0) ? 'green' : 'lightgreen';
+                ctx.fillRect(snake[i].x, snake[i].y, box, box);
+                ctx.strokeStyle = 'darkgreen';
+                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+            }
+
+            ctx.fillStyle = 'red';
+            ctx.fillRect(food.x, food.y, box, box);
+
+            let snakeX = snake[0].x;
+            let snakeY = snake[0].y;
+
+            if (direction === 'LEFT') snakeX -= box;
+            if (direction === 'UP') snakeY -= box;
+            if (direction === 'RIGHT') snakeX += box;
+            if (direction === 'DOWN') snakeY += box;
+
+            if (snakeX === food.x && snakeY === food.y) {
+                food = {
+                    x: Math.floor(Math.random() * 20) * box,
+                    y: Math.floor(Math.random() * 20) * box
+                };
+            } else {
+                snake.pop();
+            }
+
+            const newHead = { x: snakeX, y: snakeY };
+
+            if (snakeX < 0 || snakeY < 0 || snakeX >= canvas.width || snakeY >= canvas.height || collision(newHead, snake)) {
+                clearInterval(game);
+                alert('Vous avez perdus !');
+            }
+
+            snake.unshift(newHead);
+        }
+
+        function collision(head, array) {
+            for (let i = 0; i < array.length; i++) {
+                if (head.x === array[i].x && head.y === array[i].y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        document.getElementById('up').addEventListener('click', () => {
+            if (direction !== 'DOWN') direction = 'UP';
+        });
+        document.getElementById('down').addEventListener('click', () => {
+            if (direction !== 'UP') direction = 'DOWN';
+        });
+        document.getElementById('left').addEventListener('click', () => {
+            if (direction !== 'RIGHT') direction = 'LEFT';
+        });document.getElementById('right').addEventListener('click', () => {
+            if (direction !== 'LEFT') direction = 'RIGHT';
+        });
+
+        const game = setInterval(draw, 100);
+    </script>
+</body
