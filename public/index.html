@@ -4,129 +4,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeu Snake</title>
+    <title>Services Informatiques Gratuits</title>
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
-            background-color: #f0f0f0;
+            padding: 20px;
         }
-        canvas {
-            border: 1px solid #000;
-            background-color: pink ;
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #007BFF;
+            color: white;
         }
-        .controls {
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            line-height: 1.6;
+            color: #555;
         }
         .button {
-            width: 50px;
-            height: 50px;
-            margin: 5px;
-            background-color: #007bff;
+            display: inline-block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            background-color: orange;
             color: white;
-            border: none;
+            text-decoration: none;
             border-radius: 5px;
-            font-size: 24px;
-            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        #restart {
-            margin-top: 20px;
-            background-color: #28a745;
-        }    </style>
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="380
-0" height="500"></canvas>
-    <div class="controls">
-        <button class="button" id="up">↑</button>
-        <div>
-            <button class="button" id="left">←</button>
-            <button class="button" id="right">→</button>
-        </div>
-        <button class="button" id="down">↓</button>
-    </div>
-        <button class="button" id="restart">Restart</button>
 
+<header>
+    <h1>Services Informatiques Gratuits🎓,🖊️YANN🦸</h1>
+    <p>Découvrez nos services variés pour vous aider dans vos projets informatiques.</p>
+</header>
+
+<div class="container">
+    <h2>Nos Services</h2>
+    <p>Nous proposons une gamme de services informatiques gratuits pour tous. Que vous soyez un particulier ou une entreprise, nous avons quelque chose à vous offrir :</p>
     
+    <h3>1. ✨Développement Web✨</h3>
+    <p>Nous vous aidons à créer votre site web ou à améliorer votre présence en ligne. <a href="https://yann-du-buzz.onrender.com" class="button">Commencer ici🍁</a></p>
+    
+    <h3>2. 🧑‍🔧Assistance Technique🧑‍🔧</h3>
+    <p>Besoin d'aide avec votre ordinateur ou vos logiciels ? Notre équipe est là pour vous aider.</p>
+    <a href="https://bouton-2.onrender.com"class="button">En savoir plus🔑</a>
+    
+    <h3>3. 🖊️Formation en Informatique🍁</h3>
+    <p>Participez à nos ateliers et formations pour améliorer vos compétences en informatique.</p>
+    <a href="https://bouton-3.onrender.com" class="button">🖊️Voir les🍁 formations</a>
+    
+    <h3>4. Sécurité Informatique💻🔑</h3>
+    <p>Nous vous conseillons sur les meilleures pratiques pour sécuriser vos données et votre réseau.</p>
+    <a href="https://bouton-4.onrender.com" class="button">🎓Obtenez des conseils🎓</a>
+    
+    <h3>5.joué aux jeux 🎮</h3>
+    <p>Ici dans ce paragraphe nous vous proposons un super jeux de réflexion et de stratégie, resté à l\'écoute d\'autres Super jeux🎮 arrivent bientôt 💯</p>
+    <a href="https://bouton-5.onrender.com"class="button">🎮jouer 🍁 à des jeux 🎮</a>
+</div>
+<div>&copy:tout le monde à le droit d'apprendre en s'amusant 2023 geniTeck.</div>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-
-        const box = 20;
-        let snake = [{ x: 9 * box, y: 9 * box }];
-        let direction = 'RIGHT';
-        let food = {
-            x: Math.floor(Math.random() * 20) * box,
-            y: Math.floor(Math.random() * 20) * box
-        };
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < snake.length; i++) {
-                ctx.fillStyle = (i === 0) ? 'green' : 'lightgreen';
-                ctx.fillRect(snake[i].x, snake[i].y, box, box);
-                ctx.strokeStyle = 'darkgreen';
-                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
-            }
-
-            ctx.fillStyle = 'red';
-            ctx.fillRect(food.x, food.y, box, box);
-
-            let snakeX = snake[0].x;
-            let snakeY = snake[0].y;
-
-            if (direction === 'LEFT') snakeX -= box;
-            if (direction === 'UP') snakeY -= box;
-            if (direction === 'RIGHT') snakeX += box;
-            if (direction === 'DOWN') snakeY += box;
-
-            if (snakeX === food.x && snakeY === food.y) {
-                food = {
-                    x: Math.floor(Math.random() * 20) * box,
-                    y: Math.floor(Math.random() * 20) * box
-                };
-            } else {
-                snake.pop();
-            }
-
-            const newHead = { x: snakeX, y: snakeY };
-
-            if (snakeX < 0 || snakeY < 0 || snakeX >= canvas.width || snakeY >= canvas.height || collision(newHead, snake)) {
-                clearInterval(game);
-                alert('Vous avez perdus !');
-            }
-
-            snake.unshift(newHead);
-        }
-
-        function collision(head, array) {
-            for (let i = 0; i < array.length; i++) {
-                if (head.x === array[i].x && head.y === array[i].y) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        document.getElementById('up').addEventListener('click', () => {
-            if (direction !== 'DOWN') direction = 'UP';
-        });
-        document.getElementById('down').addEventListener('click', () => {
-            if (direction !== 'UP') direction = 'DOWN';
-        });
-        document.getElementById('left').addEventListener('click', () => {
-            if (direction !== 'RIGHT') direction = 'LEFT';
-        });document.getElementById('right').addEventListener('click', () => {
-            if (direction !== 'LEFT') direction = 'RIGHT';
-        });
-
-        const game = setInterval(draw, 100);
-    </script>
-</body
+</body>
+</html>
