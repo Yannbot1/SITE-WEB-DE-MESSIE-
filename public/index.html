@@ -1,240 +1,106 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yann bot game</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .board {
-      display: grid;
-      grid-template-columns: repeat(3, 100px);
-      grid-template-rows: repeat(3, 100px);
-      gap: 10px;
-      justify-content: center;
-      margin-top: 20px;
-      background-color: yellow ;
-      color: pink;
-    }
-
-    .cell {
-      width: 100px;
-      height: 100px;
-      font-size: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #333;
-      cursor: pointer;
-    }
-
-    .input-group {
-      margin-bottom: 20px;
-    }
-
-    .input-group input {
-      padding: 5px;
-      margin: 5px;
-    }
-
-    #player-turn {
-      font-size: 20px;
-      margin-top: 20px;
-    }
-
-    #restart-btn {
-      margin-top: 20px;
-      padding: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: green;
-    }
-
-    .cell.disabled {
-      pointer-events: none;
-      background-color: #f0f0f0;
-    }
-
-    #game-container {
-      display: none;
-    }
-
-    #form-container {
-      display: block;
-    }
-
-    #back-btn {
-      margin-top: 20px;
-      padding: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color:blue;
-      
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YANN BOT 🌠</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        #chat {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            background: white;
+            height: 300px;
+            overflow-y: scroll;
+        }
+        #userInput {
+            margin-top: 10px;
+        }
+        .message {
+            margin: 5px 0;
+        }
+        .user {
+            color: blue;
+        }
+        .bot {
+            color: green;
+        }
+    </style>
 </head>
 <body>
 
-  <h1>Yann game</h1>
+<h1>YANN BOT 🌠 GPT.</h1>
+<div id="chat"></div>
+<input type="text" id="userInput" placeholder="Tapez votre message..." />
+<button id="sendButton">Envoyer</button>
 
-  <!-- Formulaire pour les informations des joueurs -->
-  <div id="form-container">
-    <div class="input-group">
-      <label for="player1-name">Nom du Joueur 1 :</label>
-      <input type="text" id="player1-name" placeholder="Nom Joueur 1" required>
-    </div>
-    <div class="input-group">
-      <label for="player2-name">Nom du Joueur 2 :</label>
-      <input type="text" id="player2-name" placeholder="Nom Joueur 2" required>
-    </div>
+<script>
+    const chat = document.getElementById('chat');
+    const userInput = document.getElementById('userInput');
+    const sendButton = document.getElementById('sendButton');
 
-    <!-- Choix des pions -->
-    <div class="input-group">
-      <label for="player1-pawn">Choisir le pion de Joueur 1 (X ou O) :</label>
-      <input type="text" id="player1-pawn" maxlength="1" placeholder="X ou O" required>
-    </div>
-    <div class="input-group">
-      <label for="player2-pawn">Choisir le pion de Joueur 2 (X ou O) :</label>
-      <input type="text" id="player2-pawn" maxlength="1" placeholder="X ou O" required>
-    </div>
-    
-    <button id="start-game-btn">Démarrer le jeu</button>
-  </div>
+    sendButton.addEventListener('click', () => {
+        const userMessage = userInput.value;
+        if (userMessage.trim() === '') return;
 
-  <!-- Tableau de jeu -->
-  <div id="game-container">
-    <div class="board" id="board"></div>
-    <div id="player-turn"></div>
-    <button id="restart-btn" onclick="restartGame()">Nouvelle Partie</button>
-    <button id="back-btn" onclick="backToForm()">Retour à l'inscription</button>
-  </div>
+        // Afficher le message de l'utilisateur
+        const userMessageElement = document.createElement('div');
+        userMessageElement.classList.add('message', 'user');
+        userMessageElement.textContent = 'Vous: ' + userMessage;
+        chat.appendChild(userMessageElement);
 
-  <script>
-    let currentPlayer = 1;
-    let board = [["", "", ""], ["", "", ""], ["", "", ""]];
-    let player1Name = '';
-    let player2Name = '';
-    let player1Pawn = 'X';
-    let player2Pawn = 'O';
-    let gameOver = false;
+        // Répondre automatiquement
+        setTimeout(() => {
+            const botMessageElement = document.createElement('div');
+            botMessageElement.classList.add('message', 'bot');
+            botMessageElement.textContent = 'Bot: ' + getBotResponse(userMessage);
+            chat.appendChild(botMessageElement);
+            chat.scrollTop = chat.scrollHeight; // Faire défiler vers le bas
+        }, 1000);
 
-    // Fonction pour afficher le nom du joueur actif
-    function updateTurn() {
-      const playerTurn = currentPlayer === 1 ? player1Name : player2Name;
-      document.getElementById('player-turn').innerText = `C'est au tour de ${playerTurn} (${currentPlayer === 1 ? player1Pawn : player2Pawn})`;
-    }
+        userInput.value = ''; // Effacer le champ de saisie
+        chat.scrollTop = chat.scrollHeight; // Faire défiler vers le bas
+    });
 
-    // Fonction pour vérifier le gagnant
-    function checkWinner() {
-      for (let i = 0; i < 3; i++) {
-        if (board[i][0] && board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
-          return board[i][0];
+    function getBotResponse(userMessage) {
+        // Réponses simples basées sur des mots-clés
+        if (userMessage.toLowerCase().includes('le cameroun compte combien de région ?')) {
+            return 'le Cameroun 🇨🇲 est un pays de l Afrique centrale et il compte 10 régions ';
+        } else if (userMessage.toLowerCase().includes('bonjour yann')) {
+            return 'merci bonjour Yann bot ! quel magnifique journée pour vous !🌠';
+        } else {
+            return 'Désolé, je ne comprends pas. Pouvez-vous reformuler?';
         }
-        if (board[0][i] && board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
-          return board[0][i];
-        }
-      }
-      if (board[0][0] && board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
-        return board[0][0];
-      }
-      if (board[0][2] && board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
-        return board[0][2];
-      }
-      return null;
     }
+</script>
 
-    // Fonction de gestion des clics sur les cases
-    function handleCellClick(row, col) {
-      if (board[row][col] || gameOver) return;
+<div style="font-size: 25px">
+	<script type="text/javascript">
+	farbbibliothek = new Array();
+	farbbibliothek[0] = new Array("#FF0000","#FF1100","#FF2200","#FF3300","#FF4400","#FF5500","#FF6600","#FF7700","#FF8800","#FF9900","#FFaa00","#FFbb00","#FFcc00","#FFdd00","#FFee00","#FFff00","#FFee00","#FFdd00","#FFcc00","#FFbb00","#FFaa00","#FF9900","#FF8800","#FF7700","#FF6600","#FF5500","#FF4400","#FF3300","#FF2200","#FF1100");
+	farbbibliothek[1] = new Array("#00FF00","#000000","#00FF00","#00FF00");
+	farbbibliothek[2] = new Array("#00FF00","#FF0000","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00");
+	farbbibliothek[3] = new Array("#FF0000","#FF4000","#FF8000","#FFC000","#FFFF00","#C0FF00","#80FF00","#40FF00","#00FF00","#00FF40","#00FF80","#00FFC0","#00FFFF","#00C0FF","#0080FF","#0040FF","#0000FF","#4000FF","#8000FF","#C000FF","#FF00FF","#FF00C0","#FF0080","#FF0040");
+	farbbibliothek[4] = new Array("#FF0000","#EE0000","#DD0000","#CC0000","#BB0000","#AA0000","#990000","#880000","#770000","#660000","#550000","#440000","#330000","#220000","#110000","#000000","#110000","#220000","#330000","#440000","#550000","#660000","#770000","#880000","#990000","#AA0000","#BB0000","#CC0000","#DD0000","#EE0000");
+	farbbibliothek[5] = new Array("#000000","#000000","#000000","#FFFFFF","#FFFFFF","#FFFFFF");
+	farbbibliothek[6] = new Array("#0000FF","#FFFF00");
+	farben = farbbibliothek[4];
+	function farbschrift(){for(var b=0;b<Buchstabe.length;b++){document.all["a"+b].style.color=farben[b]}farbverlauf()}function string2array(b){Buchstabe=new Array();while(farben.length<b.length){farben=farben.concat(farben)}k=0;while(k<=b.length){Buchstabe[k]=b.charAt(k);k++}}function divserzeugen(){for(var b=0;b<Buchstabe.length;b++){document.write("<span id='a"+b+"' class='a"+b+"'>"+Buchstabe[b]+"</span>")}farbschrift()}var a=1;function farbverlauf(){for(var b=0;b<farben.length;b++){farben[b-1]=farben[b]}farben[farben.length-1]=farben[-1];setTimeout("farbschrift()",30)}var farbsatz=1;function farbtauscher(){farben=farbbibliothek[farbsatz];while(farben.length<text.length){farben=farben.concat(farben)}farbsatz=Math.floor(Math.random()*(farbbibliothek.length-0.0001))}setInterval("farbtauscher()",5000);
 
-      const currentPawn = currentPlayer === 1 ? player1Pawn : player2Pawn;
-      board[row][col] = currentPawn;
-      renderBoard();
-
-      const winner = checkWinner();
-      if (winner) {
-        alert(`${winner === player1Pawn ? player1Name : player2Name} a gagné!`);
-        saveScore(winner);
-        gameOver = true;
-      } else {
-        currentPlayer = currentPlayer === 1 ? 2 : 1;
-        updateTurn();
-      }
-    }
-
-    // Fonction pour redémarrer la partie
-    function restartGame() {
-      board = [["", "", ""], ["", "", ""], ["", "", ""]];
-      gameOver = false;
-      currentPlayer = 1;
-      renderBoard();
-      updateTurn();
-    }
-
-    // Fonction pour rendre le plateau
-    function renderBoard() {
-      const boardElement = document.getElementById('board');
-      boardElement.innerHTML = '';
-      for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-          const cell = document.createElement('div');
-          cell.classList.add('cell');
-          cell.textContent = board[i][j];
-          cell.addEventListener('click', () => handleCellClick(i, j));
-          boardElement.appendChild(cell);
-        }
-      }
-    }
-
-    // Fonction pour sauvegarder les scores
-    function saveScore(winner) {
-      let scores = JSON.parse(localStorage.getItem('scores')) || { [player1Name]: 0, [player2Name]: 0 };
-      if (winner === player1Pawn) {
-        scores[player1Name] += 1;
-      } else {
-        scores[player2Name] += 1;
-      }
-      localStorage.setItem('scores', JSON.stringify(scores));
-    }
-
-    // Fonction pour afficher les scores
-    function showScores() {
-      const scores = JSON.parse(localStorage.getItem('scores')) || { [player1Name]: 0, [player2Name]: 0 };
-      alert(`Scores actuels: \n${player1Name}: ${scores[player1Name]}\n${player2Name}: ${scores[player2Name]}`);
-    }
-
-    // Fonction pour commencer le jeu
-    function startGame() {
-      player1Name = document.getElementById('player1-name').value;
-      player2Name = document.getElementById('player2-name').value;
-      player1Pawn = document.getElementById('player1-pawn').value.toUpperCase() || 'X';
-      player2Pawn = document.getElementById('player2-pawn').value.toUpperCase() || 'O';
-
-      // Masquer le formulaire et afficher le jeu
-      document.getElementById('form-container').style.display = 'none';
-      document.getElementById('game-container').style.display = 'block';
-      renderBoard();
-      updateTurn();
-    }
-
-    // Fonction pour revenir à la fiche d'inscription
-    function backToForm() {
-      document.getElementById('form-container').style.display = 'block';
-      document.getElementById('game-container').style.display = 'none';
-    }
-
-    // Initialiser le jeu lorsque le bouton "Démarrer le jeu" est cliqué
-    document.getElementById('start-game-btn').addEventListener('click', startGame);
-
-    // Afficher les scores lorsque le jeu démarre
-    showScores();
-
-  </script>
-
+	text=
+	" ≈≈✰✰YANN BOT✰✰≈≈ 🍁::::::::::::::::::::::::::🏵️:🍁:🌴:🌲:🪴:	🍁:💮:🌀:🍄:🌠:🍀 🍁::::::::::::::::::::::::::::::::::∆∆∆∆🤠🧠∆∆∆∆<p>::::::::::::::::::::::::::::::"
+	string2array(text);
+	divserzeugen();
+	//document.write(text);
+	</script></div>
+	<p id='name'>
+	<script></script>
 </body>
-</html
+</html>
