@@ -1,245 +1,84 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur de Citations Motivantes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Services Informatiques Gratuits</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            background: #f0f2f5;
+            font-family: Arial, sans-serif;
+            background-color: #;
             margin: 0;
-            padding: 0;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #007BFF;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
             color: #333;
         }
-
-        header {
-            background: linear-gradient(45deg, #4e54c8, #8f94fb);
-            color: white;
-            padding: 30px 20px;
-            text-align: center;
+        p {
+            line-height: 1.6;
+            color: #555;
         }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-        }
-
-        main {
-            padding: 30px 15px;
-            max-width: 900px;
-            margin: auto;
-        }
-
-        section {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-            padding: 20px;
-        }
-
-        section h2 {
-            color: #4e54c8;
-        }
-
-        button {
+        .button {
+            display: inline-block;
+            margin: 10px 0;
             padding: 10px 20px;
-            background: #4e54c8;
+            background-color: orange;
             color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-size: 1em;
-        }
-
-        button:hover {
-            background: #363cbf;
-        }
-
-        .quote {
-            margin-top: 20px;
-            font-size: 1.4em;
-            color: #222;
-            font-style: italic;
-        }
-
-        footer {
-            text-align: center;
-            font-size: 0.9em;
-            color: #666;
-            padding: 20px;
-            border-top: 1px solid #ddd;
-            background-color: #fff;
-        }
-
-        footer a {
-            color: #4e54c8;
             text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: green;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Générateur de Citations Motivantes</h1>
-        <p>Inspire-toi chaque jour dans tous les domaines de ta vie.(ce projet vous ait présente par Yann bot un développeur pationné.)</p>
-    </header>
 
-    <main>
-        <section>
-            <h2>Citations sur la Vie Sentimentale</h2>
-            <button onclick="generateRomanticQuote()">Afficher une citation sentimentale</button>
-            <p class="quote" id="romanticQuote"></p>
-        </section>
+<header>
+    <h1>Services Informatiques 🎓@YANN🦸</h1>
+    <p>Découvrez nos services variés pour vous aider dans vos projets informatiques.</p>
+</header>
 
-        <section>
-            <h2>Citations sur la Vie Professionnelle</h2>
-            <button onclick="generateWorkQuote()">Afficher une citation professionnelle</button>
-            <p class="quote" id="workQuote"></p>
-        </section>
+<div class="container">
+    <h2>Nos Services</h2>
+    <p>Nous proposons une gamme de services informatiques gratuits pour tous. Que vous soyez un particulier ou une entreprise, nous avons quelque chose à vous offrir :</p>
+    
+    <h3>1. ✨Développement Web✨</h3>
+    <p>Nous vous aidons à créer votre site web ou à améliorer votre présence en ligne. <a href="https://yann-du-buzz.onrender.com" class="button">Commencer ici🍁</a></p>
+    
+    <h3>2. 🧑‍🔧Assistance Technique🧑‍🔧</h3>
+    <p>Besoin d'aide avec votre ordinateur ou vos logiciels ? Notre équipe est là pour vous aider.</p>
+    <a href="#" class="button">En savoir plus🔑</a>
+    <input type="entre">
+    <h3>3. 🖊️Formation en Informatique🍁</h3>
+    <p>Participez à nos ateliers et formations pour améliorer vos compétences en informatique.</p>
+    <a href="#" class="button">🖊️Voir les🍁 formations</a>
+    
+    <h3>4. Sécurité Informatique💻🔑</h3>
+    <p>Nous vous conseillons sur les meilleures pratiques pour sécuriser vos données et votre réseau.</p>
+    <a href="#" class="button">🎓Obtenez des conseils🎓</a>
+    
+    <h3>joué aux jeux 🎮</h3>
+    <p>Ici dans ce paragraphe nous vous proposons un super jeux de réflexion et de stratégie, resté à l\'écoute d\'autres Super jeux🎮 arrivent bientôt 💯</p>
+    <a href="#" class="button">🎮jouer 🍁 à des jeux 🎮</a>
+</div>
+<div>&copy: Yann bot .</div>
 
-        <section>
-            <h2>Citations sur l'Informatique et le Hack</h2>
-            <button onclick="generateTechQuote()">Afficher une citation informatique</button>
-            <p class="quote" id="techQuote"></p>
-        </section>
-
-        <section>
-            <h2>Citations sur le Développement Personnel</h2>
-            <button onclick="generatePersonalQuote()">Afficher une citation personnelle</button>
-            <p class="quote" id="personalQuote"></p>
-        </section>
-
-        <section>
-            <h2>Citations Sportives</h2>
-            <button onclick="generateSportQuote()">Afficher une citation sportive</button>
-            <p class="quote" id="sportQuote"></p>
-        </section>
-
-        <section>
-            <h2>Citations d'Entrepreneuriat</h2>
-            <button onclick="generateBusinessQuote()">Afficher une citation business</button>
-            <p class="quote" id="businessQuote"></p>
-        </section>
-
-        <section>
-            <h2>Citations sur la Créativité et l'Art</h2>
-            <button onclick="generateArtQuote()">Afficher une citation artistique</button>
-            <p class="quote" id="artQuote"></p>
-        </section>
-
-        <section>
-            <h2>Citations Scientifiques</h2>
-            <button onclick="generateScienceQuote()">Afficher une citation scientifique</button>
-            <p class="quote" id="scienceQuote"></p>
-        </section>
-    </main>
-
-    <footer>
-        &copy; 2025 Générateur de Citations. Tous droits réservés. 
-        auteur : yann bot| <a href="#">Mentions légales</a> | <a href="#">Politique de confidentialité</a>
-    </footer>
-
-    <script>
-        const romanticQuotes = [
-            "L'amour, c'est comme le vent, nous ne pouvons pas le voir, mais nous pouvons le ressentir.",
-            "Tu es mon aujourd'hui et tous mes lendemains.",
-            "L'amour est composé d'une seule âme habitant deux corps.",
-            "La plus grande joie de la vie, c'est l'amour."
-        ];
-
-        const workQuotes = [
-            "Le succès est la somme de petits efforts répétés jour après jour.",
-            "L'avenir appartient à ceux qui croient à la beauté de leurs rêves.",
-            "Ne rêvez pas votre vie, vivez vos rêves.",
-            "Le travail acharné bat le talent quand le talent ne travaille pas dur."
-        ];
-
-        const techQuotes = [
-            "Parfois, c’est le bug qui te montre la voie.",
-            "Le code, c’est de la poésie en logique.",
-            "Un bon hacker est simplement quelqu’un qui cherche à comprendre les systèmes.",
-            "La sécurité n'est pas un produit, mais un processus.",
-            "Il n'y a pas de problème qui ne puisse être résolu avec une ligne de code en plus... ou en moins."
-        ];
-
-        const personalQuotes = [
-            "Crois en toi, chaque jour est une nouvelle chance de réussir.",
-            "Les limites n'existent que si tu y crois.",
-            "Commence là où tu es, utilise ce que tu as, fais ce que tu peux.",
-            "Ta seule limite, c’est toi-même.",
-            "Les petites habitudes créent de grands changements."
-        ];
-
-        const sportQuotes = [
-            "La douleur d'aujourd'hui est la force de demain.",
-            "Chaque entraînement te rapproche de ton objectif.",
-            "Ton seul adversaire, c’est la personne que tu étais hier.",
-            "Le corps accomplit ce que l’esprit croit possible.",
-            "Arrête de souhaiter, commence à travailler."
-        ];
-
-        const businessQuotes = [
-            "Ne limite pas tes défis, défie tes limites.",
-            "Un rêve ne devient réalité qu’avec de la détermination et de l’action.",
-            "Les gagnants trouvent des moyens, les perdants des excuses.",
-            "Le succès est une échelle que l'on ne peut pas grimper les mains dans les poches.",
-            "Échouer, c’est avoir essayé. Ne rien faire, c’est échouer à coup sûr."
-        ];
-
-        const artQuotes = [
-            "La créativité, c’est l’intelligence qui s’amuse. — Albert Einstein",
-            "Crée comme si personne ne te regardait.",
-            "L’art lave l’âme de la poussière du quotidien. — Picasso",
-            "Chaque artiste commence par être amateur.",
-            "L’imagination est plus importante que la connaissance."
-        ];
-
-        const scienceQuotes = [
-            "Le doute est le commencement de la sagesse.",
-            "La science est une manière de penser, bien plus qu’un corps de connaissances.",
-            "La curiosité est le moteur de toute découverte.",
-            "Rien ne se perd, rien ne se crée, tout se transforme. — Lavoisier",
-            "Chaque atome en toi a appartenu à une étoile."
-        ];
-
-        function getRandomQuote(quotes) {
-            return quotes[Math.floor(Math.random() * quotes.length)];
-        }
-
-        function generateRomanticQuote() {
-            document.getElementById("romanticQuote").innerText = getRandomQuote(romanticQuotes);
-        }
-
-        function generateWorkQuote() {
-            document.getElementById("workQuote").innerText = getRandomQuote(workQuotes);
-        }
-
-        function generateTechQuote() {
-            document.getElementById("techQuote").innerText = getRandomQuote(techQuotes);
-        }
-
-        function generatePersonalQuote() {
-            document.getElementById("personalQuote").innerText = getRandomQuote(personalQuotes);
-        }
-
-        function generateSportQuote() {
-            document.getElementById("sportQuote").innerText = getRandomQuote(sportQuotes);
-        }
-
-        function generateBusinessQuote() {
-            document.getElementById("businessQuote").innerText = getRandomQuote(businessQuotes);
-        }
-
-        function generateArtQuote() {
-            document.getElementById("artQuote").innerText = getRandomQuote(artQuotes);
-        }
-
-        function generateScienceQuote() {
-            document.getElementById("scienceQuote").innerText = getRandomQuote(scienceQuotes);
-        }
-    </script>
 </body>
-	</html>
+</html>
