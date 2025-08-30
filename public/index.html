@@ -1,84 +1,894 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Services Informatiques Gratuits</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #;
-            margin: 0;
-            padding: 20px;
-        }
-        header {
-            text-align: center;
-            padding: 20px;
-            background-color: #007BFF;
-            color: white;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            color: #333;
-        }
-        p {
-            line-height: 1.6;
-            color: #555;
-        }
-        .button {
-            display: inline-block;
-            margin: 10px 0;
-            padding: 10px 20px;
-            background-color: orange;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .button:hover {
-            background-color: green;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yann Bot Poème</title>
+  <!-- Ajout de html2canvas pour la fonction savePoem -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ff6bd6, #00f4ff);
+      color: #fff;
+      transition: all 0.5s ease;
+      overflow-x: hidden;
+    }
+
+    /* Thèmes de fond */
+    .theme-gradient { background: linear-gradient(135deg, #ff6bd6, #00f4ff); }
+    .theme-waves { background: linear-gradient(135deg, #6bd6ff, #00aaff); }
+    .theme-stars { background: linear-gradient(135deg, #1a1a40, #2a2a80); }
+    .theme-clouds { background: linear-gradient(135deg, #f0f8ff, #b3e5fc); }
+    .theme-aurora { background: linear-gradient(135deg, #0d1b2a, #1e3a8a); }
+    .theme-fireflies { background: linear-gradient(135deg, #1c2526, #2e4a4f); }
+    .theme-rain { background: linear-gradient(135deg, #b0c4de, #4682b4); }
+    .theme-galaxy { background: linear-gradient(135deg, #0a0a23, #4b0082); }
+    .theme-sunset { background: linear-gradient(135deg, #ffecd1, #ff4500); }
+    .theme-forest { background: linear-gradient(135deg, #013220, #228b22); }
+    .high-contrast { filter: contrast(1.5); background: #000; color: #fff; }
+
+    /* Bouton pour ouvrir le tiroir */
+    .menu-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      background: linear-gradient(45deg, #ff1493, #00b7eb);
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: 0 0 15px rgba(255, 20, 147, 0.7);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .menu-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255, 20, 147, 1), 0 0 30px rgba(0, 183, 235, 1);
+    }
+
+    /* Bouton point d'interrogation */
+    .info-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 20px;
+      background: linear-gradient(45deg, #ff1493, #00b7eb);
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: 0 0 15px rgba(255, 20, 147, 0.7);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .info-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255, 20, 147, 1), 0 0 30px rgba(0, 183, 235, 1);
+    }
+
+    /* Tiroir de navigation */
+    .nav-drawer {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background: linear-gradient(135deg, #ff00cc, #00ffcc, #ff00cc);
+      color: #fff;
+      padding: 20px;
+      transition: left 0.4s ease;
+      z-index: 1000;
+      box-shadow: 2px 0 15px rgba(255, 0, 204, 0.9);
+      animation: neonGlow 1.5s infinite alternate;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .nav-drawer.open {
+      left: 0;
+    }
+    @keyframes neonGlow {
+      0% { box-shadow: 0 0 20px rgba(255, 0, 204, 0.9), 0 0 30px rgba(0, 255, 204, 0.9); }
+      100% { box-shadow: 0 0 30px rgba(255, 0, 204, 1), 0 0 40px rgba(0, 255, 204, 1); }
+    }
+
+    .nav-drawer h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+
+    .nav-drawer input, .nav-drawer select, .nav-drawer button {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(45deg, #ff1493, #00b7eb);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    .nav-drawer input:hover, .nav-drawer select:hover, .nav-drawer button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 20, 147, 1), 0 0 20px rgba(0, 183, 235, 1);
+    }
+
+    /* Fond sombre pour l'overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      z-index: 999;
+    }
+    .overlay.active {
+      display: block;
+    }
+
+    /* Canvas */
+    canvas {
+      max-width: 90%;
+      max-height: 60vh;
+      border: 2px solid #fff;
+      border-radius: 10px;
+      margin: 20px 0;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Animation d'entrée */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .poem-text { animation: fadeIn 1s ease-in; }
+
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 10px;
+      font-size: 12px;
+      color: #fff;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+    footer a {
+      color: #00ffcc;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Modal profil */
+    #profileModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #profileModal div {
+      background: linear-gradient(135deg, #ff00cc, #00ffcc, #ff00cc);
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 90%;
+      width: 400px;
+      box-shadow: 0 0 30px rgba(255, 0, 204, 0.9);
+      animation: neonGlow 1.5s infinite alternate;
+    }
+    #profileModal h2 {
+      color: #fff;
+      text-align: center;
+      margin-top: 0;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+    #profileModal button, #profileModal input {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(45deg, #ff1493, #00b7eb);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    #profileModal button:hover, #profileModal input:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 20, 147, 1), 0 0 20px rgba(0, 183, 235, 1);
+    }
+    #profilePreview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto;
+      display: block;
+      border: 2px solid #fff;
+    }
+    #cameraStream {
+      width: 100%;
+      max-height: 200px;
+    }
+    #profileDisplay img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: 5px;
+      border: 1px solid #fff;
+    }
+
+    /* Modal Info */
+    #infoModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #infoModal div {
+      background: linear-gradient(135deg, #ff00cc, #00ffcc, #ff00cc);
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 90%;
+      width: 400px;
+      box-shadow: 0 0 30px rgba(255, 0, 204, 0.9);
+      animation: neonGlow 1.5s infinite alternate;
+    }
+    #infoModal h2 {
+      color: #fff;
+      text-align: center;
+      margin-top: 0;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+    #infoModal p {
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+    #infoModal button {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(45deg, #ff1493, #00b7eb);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      width: 100%;
+    }
+    #infoModal button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 20, 147, 1), 0 0 20px rgba(0, 183, 235, 1);
+    }
+
+    /* Responsivité */
+    @media (max-width: 600px) {
+      .nav-drawer { width: 80%; }
+      .nav-drawer input, .nav-drawer select, .nav-drawer button { font-size: 12px; }
+      #profileModal div, #infoModal div { width: 90%; }
+      #profileModal input, #profileModal button, #infoModal button { font-size: 12px; }
+    }
+  </style>
 </head>
-<body>
+<body class="theme-gradient">
+  <h1 style="font-size: 1.3em; margin: 20px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);">Poèmes Yann Bot</h1>
+  
+  <!-- Bouton pour ouvrir le tiroir -->
+  <button class="menu-btn" onclick="toggleDrawer()" aria-label="Ouvrir le menu">☰</button>
+  
+  <!-- Bouton point d'interrogation -->
+  <button class="info-btn" onclick="openInfoModal()" aria-label="Ouvrir les informations">?</button>
 
-<header>
-    <h1>Services Informatiques 🎓@YANN🦸</h1>
-    <p>Découvrez nos services variés pour vous aider dans vos projets informatiques.</p>
-</header>
+  <!-- Tiroir de navigation -->
+  <div class="nav-drawer" id="drawer">
+    <h2>Paramètres</h2>
+    <input type="text" id="keyword" placeholder="Mot-clé (ex. Amour)" aria-label="Mot-clé pour le poème">
+    <select id="themeSelector" aria-label="Fond">
+      <option value="gradient">Dégradé</option>
+      <option value="waves">Vagues</option>
+      <option value="stars">Étoiles</option>
+      <option value="clouds">Nuages</option>
+      <option value="aurora">Aurores</option>
+      <option value="fireflies">Lucioles</option>
+      <option value="rain">Pluie</option>
+      <option value="galaxy">Galaxie</option>
+      <option value="sunset">Coucher de Soleil</option>
+      <option value="forest">Forêt</option>
+    </select>
+    <select id="domainSelector" aria-label="Domaine">
+      <option value="amour">Amour</option>
+      <option value="nature">Nature</option>
+      <option value="aventure">Aventure</option>
+      <option value="melancolie">Mélancolie</option>
+      <option value="espoir">Espoir</option>
+      <option value="technologie">Technologie</option>
+      <option value="liberte">Liberté</option>
+    </select>
+    <button onclick="generatePoem()" aria-label="Générer">Générer</button>
+    <button onclick="toggleHighContrast()" aria-label="Contraste">Contraste</button>
+    <button onclick="exportImage()" aria-label="Exporter">Exporter</button>
+    <button onclick="sharePoem()" aria-label="Partager">Partager</button>
+    <button onclick="copyPoem()" aria-label="Copier le poème">Copier</button>
+    <button onclick="savePoem()" aria-label="Sauvegarder en image">Sauvegarder en image</button>
+    <button onclick="openProfileModal()" aria-label="Ouvrir le profil">Profil</button>
+    <button onclick="openInfoModal()" aria-label="Ouvrir les informations">Info</button>
+  </div>
 
-<div class="container">
-    <h2>Nos Services</h2>
-    <p>Nous proposons une gamme de services informatiques gratuits pour tous. Que vous soyez un particulier ou une entreprise, nous avons quelque chose à vous offrir :</p>
-    
-    <h3>1. ✨Développement Web✨</h3>
-    <p>Nous vous aidons à créer votre site web ou à améliorer votre présence en ligne. <a href="https://yann-du-buzz.onrender.com" class="button">Commencer ici🍁</a></p>
-    
-    <h3>2. 🧑‍🔧Assistance Technique🧑‍🔧</h3>
-    <p>Besoin d'aide avec votre ordinateur ou vos logiciels ? Notre équipe est là pour vous aider.</p>
-    <a href="#" class="button">En savoir plus🔑</a>
-    <input type="entrer">
-    <h3>3. 🖊️Formation en Informatique🍁</h3>
-    <p>Participez à nos ateliers et formations pour améliorer vos compétences en informatique.</p>
-    <a href="#" class="button">🖊️Voir les🍁 formations</a>
-    
-    <h3>4. Sécurité Informatique💻🔑</h3>
-    <p>Nous vous conseillons sur les meilleures pratiques pour sécuriser vos données et votre réseau.</p>
-    <a href="#" class="button">🎓Obtenez des conseils🎓</a>
-    
-    <h3>joué aux jeux 🎮</h3>
-    <p>Ici dans ce paragraphe nous vous proposons un super jeux de réflexion et de stratégie, resté à l\'écoute d\'autres Super jeux🎮 arrivent bientôt 💯</p>
-    <a href="#" class="button">🎮jouer 🍁 à des jeux 🎮</a>
-</div>
-<div>&copy: Yann bot .</div>
+  <!-- Fond sombre pour l'overlay -->
+  <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
 
+  <!-- Canvas -->
+  <canvas id="canvas" class="poem-text"></canvas>
+
+  <!-- Modal pour le profil -->
+  <div id="profileModal" style="display: none;">
+    <div>
+      <h2>Votre Profil</h2>
+      <input type="text" id="profileName" placeholder="Votre nom !" aria-label="Nom du profil">
+      <div style="text-align: center; margin-bottom: 10px;">
+        <img id="profilePreview" src="" alt="Aperçu de la photo de profil" style="display: none;">
+      </div>
+      <input type="file" id="profilePhoto" accept="image/*" aria-label="Uploader une photo">
+      <button onclick="takePhoto()" aria-label="Prendre une photo">Prendre une photo</button>
+      <video id="cameraStream" style="display: none;"></video>
+      <canvas id="photoCanvas" style="display: none;"></canvas>
+      <div style="text-align: center;">
+        <button onclick="saveProfile()" aria-label="Sauvegarder le profil">Sauvegarder</button>
+        <button onclick="closeProfileModal()" aria-label="Fermer le profil">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal pour les informations -->
+  <div id="infoModal" style="display: none;">
+    <div>
+      <h2>Comment utiliser le Générateur de Poèmes</h2>
+      <p>
+        Bienvenue dans le Générateur de Poèmes Yann Bot ! Suivez ces étapes pour créer votre poème visuel :
+        <ol>
+          <li><b>Ouvrez le tiroir</b> : Cliquez sur l’icône ☰ ou glissez depuis le bord gauche (sur mobile).</li>
+          <li><b>Entrez un mot-clé</b> : Tapez un nom (ex."Andréa") pour inspirer le poème.et le poème seras fait exprès pour cette personne 💫</li>
+          <li><b>Choisissez un thème</b> : Sélectionnez un fond visuel (ex. "Étoiles", "Vagues").</li>
+          <li><b>Choisissez un domaine</b> : Sélectionnez un thème poétique (ex. "Amour", "Nature").</li>
+          <li><b>Générez</b> : Cliquez sur "Générer" pour créer votre poème.</li>
+          <li><b>Personnalisez</b> : Utilisez "Contraste" pour ajuster la lisibilité, ou accédez à "Profil" pour ajouter votre nom et photo.</li>
+          <li><b>Exportez/Partagez</b> : Utilisez "Exporter" pour sauvegarder l’image, "Partager" pour diffuser, ou "Copier" pour le texte.</li>
+        </ol>
+        Amusez-vous à créer des poèmes uniques avec Yann Bot ! 🍁🥀🌹
+      </p>
+      <button onclick="closeInfoModal()" aria-label="Fermer les informations">Fermer</button>
+    </div>
+  </div>
+
+  <footer>
+    <span id="profileDisplay"></span>
+    © 2025 Générateur de Poèmes Visuels. Par Yann Bot | <a href="#">Mentions légales 🍁🥀🌹YANN BOT!!!!🍁🥀🌹</a>
+  </footer>
+
+  <script>
+    // JavaScript pour gérer le tiroir
+    let isDragging = false;
+    let startX;
+
+    function toggleDrawer() {
+      const drawer = document.getElementById('drawer');
+      const overlay = document.getElementById('overlay');
+      drawer.classList.toggle('open');
+      overlay.classList.toggle('active');
+    }
+
+    document.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      isDragging = startX < 50;
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const currentX = e.touches[0].clientX;
+      const diffX = currentX - startX;
+      if (diffX > 50) {
+        toggleDrawer();
+        isDragging = false;
+      }
+    });
+
+    document.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    // Fonctions pour le modal Info
+    function openInfoModal() {
+      document.getElementById('infoModal').style.display = 'flex';
+      if (document.getElementById('drawer').classList.contains('open')) {
+        toggleDrawer();
+      }
+    }
+
+    function closeInfoModal() {
+      document.getElementById('infoModal').style.display = 'none';
+    }
+
+    // Poèmes complets (corrigés)
+    const poemTemplates = {
+      amour: [
+        ["Dans l’éclat {keyword}, le cœur s’éveille,", "Sous un ciel d’étoiles, l’âme s’engage,", "Chaque battement murmure ton nom,", "Dans un souffle, l’amour se prolonge.", "Oh {keyword}, lumière des jours,", "Tu guides mes rêves pour toujours."],
+        ["{keyword} danse au fond de mes yeux,", "Comme un feu doux sous les cieux,", "Nos mains liées, le temps s’efface,", "Dans l’étreinte, plus rien ne glace.", "Ton sourire, un éternel printemps,", "Porte mon cœur dans l’instant."],
+        ["Sous l’ombre tendre de {keyword},", "Les âmes s’unissent, loin des haines,", "Un regard suffit à tout changer,", "Dans ce lien, le monde peut s’effacer.", "Oh {keyword}, doux secret partagé,", "Tu es ma flamme, mon éternité."],
+        ["{keyword} brille comme un phare,", "Dans la nuit, il guide mes pas,", "Chaque mot d’amour, une caresse,", "Chaque silence, une promesse.", "Avec toi, le cœur ne craint rien,", "Car {keyword} est notre chemin."],
+        ["Dans les plis du vent, {keyword} chante,", "Une mélodie douce et vivante,", "Nos âmes s’entrelacent sans fin,", "Comme des étoiles dans le destin.", "Oh {keyword}, éclat de mes nuits,", "Tu rends la vie plus infinie."],
+        ["{keyword} est un feu qui ne s’éteint,", "Dans le froid, il toujours étreint,", "Chaque instant avec toi est un poème,", "Une histoire d’amour que j’aime.", "Sous ton regard, le monde s’efface,", "Et l’éternité prend sa place."],
+        ["Oh {keyword}, souffle de mon cœur,", "Tu portes en toi tant de chaleur,", "Dans tes bras, le temps s’arrête,", "Chaque seconde est une fête.", "Avec {keyword}, tout devient lumière,", "Un amour plus vaste que la mer."],
+      ],
+      nature: [
+        ["Sous l’ombre de {keyword}, la forêt murmure,", "Les feuilles dansent avec la nature,", "Le vent caresse les cimes altières,", "Et la terre chante ses prières.", "Oh {keyword}, souffle de vie,", "Tu portes l’âme de l’infini."],
+        ["{keyword} brille dans l’aube claire,", "Sur les champs où la rosée éclaire,", "Les rivières chantent en écho,", "Sous le ciel, tout semble si beau.", "Dans ton éclat, la terre respire,", "Et la vie ne cesse de s’écrire."],
+        ["Dans la brise, {keyword} s’élève,", "Comme un oiseau libre qui rêve,", "Les montagnes veillent en silence,", "La nature offre sa présence.", "Oh {keyword}, force éternelle,", "Tu es la voix qui m’appelle."],
+        ["{keyword} coule comme une rivière,", "Dans ses flots, plus rien ne m’opère,", "Les arbres dansent sous le soleil,", "Chaque feuille est un doux réveil.", "Dans ton calme, je trouve la paix,", "Et la nature m’ouvre ses plais."],
+        ["Sous le ciel, {keyword} s’étend,", "Comme un océan de verts champs,", "Les fleurs s’ouvrent à l’horizon,", "Et chantent leur douce chanson.", "Oh {keyword}, éclat de la terre,", "Tu rends le cœur léger, sincère."],
+        ["{keyword} murmure dans la plaine,", "Sous la lune, loin de toute peine,", "Les étoiles veillent sur les bois,", "Et la nuit s’emplit de ta voix.", "Dans ton souffle, je vois l’éclat,", "De la nature qui ne meurt pas."],
+        ["Dans l’ombre douce de {keyword},", "La terre bat comme un grand cœur,", "Les ruisseaux dansent avec la brise,", "Et la vie s’éveille, précise.", "Oh {keyword}, miroir des cieux,", "Tu rends le monde plus radieux."],
+      ],
+      aventure: [
+        ["{keyword} guide mes pas audacieux,", "Vers des terres sous des cieux nouveaux,", "Les sentiers s’ouvrent, pleins de mystère,", "Chaque pas défie la frontière.", "Oh {keyword}, flamme du voyage,", "Tu portes mon cœur au sauvage."],
+        ["Dans l’éclat de {keyword}, je pars,", "Vers l’horizon, loin des remparts,", "Les vents hurlent, les mers appellent,", "Et l’âme brave les vagues rebelles.", "Avec {keyword}, tout est possible,", "Chaque défi rend l’âme invincible."],
+        ["{keyword} chante dans la tempête,", "Un appel que rien n’arrête,", "Montagnes, déserts, forêts profondes,", "Le monde s’ouvre, libre et immonde.", "Oh {keyword}, étoile des braves,", "Tu guides ceux que rien n’entrave."],
+        ["Sous l’ombre de {keyword}, j’avance,", "Dans la nuit, plein d’espérance,", "Les étoiles tracent mon chemin,", "Vers des rêves qui n’ont pas de fin.", "Avec {keyword}, le cœur s’élance,", "Pour une vie pleine d’errance."],
+        ["{keyword} brille comme un flambeau,", "Dans les terres où nul n’est trop tôt,", "Chaque pas révèle un nouveau monde,", "Chaque instant rend l’âme plus profonde.", "Oh {keyword}, souffle d’épopée,", "Tu fais naître l’âme exaltée."],
+        ["Dans le vent, {keyword} m’appelle,", "Vers des cimes, des mers cruelles,", "Le danger danse, mais je ris,", "Car l’aventure est mon pays.", "Avec {keyword}, je suis vivant,", "Libre dans l’instant triomphant."],
+        ["{keyword} est une flamme vive,", "Qui pousse l’âme à la dérive,", "Sur des chemins où tout s’invente,", "Chaque jour est une attente.", "Oh {keyword}, guide des intrépides,", "Tu rends la vie moins aride."],
+      ],
+      melancolie: [
+        ["Dans l’ombre de {keyword}, je erre,", "Sous un ciel lourd, loin de la terre,", "Les souvenirs dansent dans la brume,", "Et le cœur s’éteint dans l’écume.", "Oh {keyword}, écho du passé,", "Tu portes l’âme des effacés."],
+        ["{keyword} murmure dans le silence,", "Un chant doux, plein de souvenance,", "Les jours perdus s’effacent lentement,", "Dans le vent, tout semble si lent.", "Avec {keyword}, le cœur s’égare,", "Dans des rêves que rien n’égale."],
+        ["Sous la pluie, {keyword} s’efface,", "Comme une ombre que le temps glace,", "Chaque pas résonne dans le vide,", "Et l’âme reste toujours avide.", "Oh {keyword}, miroir des regrets,", "Tu peins la vie en tons discrets."],
+        ["{keyword} chante une vieille rengaine,", "Dans la nuit, loin de toute haleine,", "Les étoiles pleurent en silence,", "Et le cœur s’emplit d’absence.", "Avec {keyword}, tout semble fini,", "Mais la peine garde sa vie."],
+        ["Dans le froid, {keyword} s’éteint,", "Comme un feu que la nuit atteint,", "Les jours d’antan s’effacent en douceur,", "Laissant l’âme pleine de langueur.", "Oh {keyword}, souffle du néant,", "Tu portes l’écho des instants."],
+        ["{keyword} est une larme cachée,", "Dans le cœur, une plaie usée,", "Les souvenirs s’effacent dans l’ombre,", "Et le temps rend tout plus sombre.", "Avec {keyword}, je marche seul,", "Sous un ciel voilé d’un linceul."],
+        ["Sous l’éclat pâle de {keyword},", "Le monde semble loin, perdu,", "Chaque souffle est un adieu discret,", "Chaque pas un poids qui m’arrête.", "Oh {keyword}, ombre des jours passés,", "Tu berces l’âme des lassés."],
+      ],
+      espoir: [
+        ["Dans la lumière de {keyword}, je vois,", "Un chemin clair, loin des effrois,", "Chaque pas porte un nouveau rêve,", "Et l’âme s’élève, si brève.", "Oh {keyword}, éclat d’avenir,", "Tu fais naître l’envie de sourire."],
+        ["{keyword} brille dans l’obscurité,", "Comme une étoile de vérité,", "Les ombres s’effacent sous son éclat,", "Et le cœur s’ouvre à chaque pas.", "Avec {keyword}, tout peut renaître,", "Un monde nouveau veut apparaître."],
+        ["Sous le ciel, {keyword} s’élance,", "Portant l’âme pleine d’espérance,", "Les jours sombres s’effacent enfin,", "Pour un futur aux doux confins.", "Oh {keyword}, lumière des cieux,", "Tu rends la vie plus radieuse."],
+        ["{keyword} chante dans le matin,", "Un air doux, un nouveau destin,", "Les chaînes du passé se brisent,", "Et l’âme s’ouvre à la surprise.", "Avec {keyword}, je vois l’aurore,", "Un monde où l’espoir s’évapore."],
+        ["Dans l’éclat de {keyword}, je crois,", "Que demain chassera les effrois,", "Chaque rêve devient une flamme,", "Qui réchauffe le cœur et l’âme.", "Oh {keyword}, guide des lendemains,", "Tu traces un lumineux chemin."],
+        ["{keyword} est un phare dans la nuit,", "Un éclat qui jamais ne s’enfuit,", "Les tempêtes s’effacent sous son aile,", "Et l’espoir renaît, éternel.", "Avec {keyword}, tout semble possible,", "Le cœur devient invincible."],
+        ["Sous l’ombre douce de {keyword},", "L’âme s’élève, loin des haines,", "Chaque jour porte une promesse,", "Un futur plein de tendresse.", "Oh {keyword}, souffle de lumière,", "Tu fais naître un monde meilleur."],
+      ],
+      technologie: [
+        ["Dans l’éclat de {keyword}, le futur brille,", "Des circuits dansent, l’esprit s’éveille,", "Les données s’entrelacent en silence,", "Portant l’homme vers l’immense.", "Oh {keyword}, feu de l’innovation,", "Tu sculptes la nouvelle création."],
+        ["{keyword} pulse comme un cœur d’acier,", "Dans un monde où tout peut s’éclairer,", "Les écrans chantent des rêves nouveaux,", "Et l’avenir s’ouvre en écho.", "Avec {keyword}, l’âme s’envole,", "Vers des cieux que nul ne contrôle."],
+        ["Sous l’ombre de {keyword}, tout s’invente,", "Des machines naît une attente,", "Les codes murmurent des secrets,", "Un futur libre de regrets.", "Oh {keyword}, éclat du progrès,", "Tu portes l’homme au-delà des faits."],
+        ["{keyword} brille dans l’ère numérique,", "Un phare dans un monde chimérique,", "Les réseaux tissent des liens infinis,", "Et l’esprit s’ouvre à l’amplifi.", "Avec {keyword}, tout se transforme,", "Le monde prend une nouvelle forme."],
+        ["Dans le flux de {keyword}, je vois,", "Un horizon où tout se conçoit,", "Les machines dansent avec l’humain,", "Pour un futur au doux dessein.", "Oh {keyword}, souffle du savoir,", "Tu fais naître un nouvel espoir."],
+        ["{keyword} est une étoile d’acier,", "Guidant l’âme dans un monde altier,", "Les algorithmes chantent en chœur,", "Un hymne au progrès, sans peur.", "Avec {keyword}, le temps s’accélère,", "Pour une vie toujours plus claire."],
+        ["Sous la lueur de {keyword}, l’avenir,", "S’ouvre comme un livre à venir,", "Les données dansent, libres et vives,", "Portant l’homme vers des rives.", "Oh {keyword}, flamme de l’esprit,", "Tu rends le monde plus éclairci."],
+      ],
+      liberte: [
+        ["Dans l’éclat de {keyword}, je m’envole,", "Loin des chaînes, l’âme s’affole,", "Le vent porte mes rêves au loin,", "Vers un ciel sans aucun besoin.", "Oh {keyword}, souffle de l’infini,", "Tu rends la vie plus éclaircie."],
+        ["{keyword} chante dans l’horizon,", "Un air libre, loin des prisons,", "Chaque pas brise une barrière,", "Et l’âme s’ouvre à la lumière.", "Avec {keyword}, tout est possible,", "Le cœur devient invincible."],
+        ["Sous le ciel, {keyword} m’appelle,", "Vers des terres où rien ne chancelle,", "Les murs tombent, le cœur s’élance,", "Dans un monde plein d’espérance.", "Oh {keyword}, éclat de l’être,", "Tu fais naître un monde plus libre."],
+        ["{keyword} brille comme un soleil,", "Dans la nuit, elle m’émerveille,", "Chaque souffle est une délivrance,", "Chaque instant une nouvelle chance.", "Avec {keyword}, je suis vivant,", "Libre dans l’éternel instant."],
+        ["Dans l’ombre de {keyword}, je cours,", "Vers des jours sans aucun détour,", "Les chaînes s’effacent dans le vent,", "Et l’âme s’élève, triomphante.", "Oh {keyword}, flamme des cieux,", "Tu rends le monde plus radieux."],
+        ["{keyword} est un cri dans la nuit,", "Un écho qui jamais ne s’enfuit,", "Les barreaux fondent sous son éclat,", "Et le cœur s’ouvre à chaque pas.", "Avec {keyword}, je suis moi-même,", "Libre d’aimer, libre de l’aime."],
+        ["Sous l’éclat doux de {keyword},", "Le monde s’ouvre, loin des haines,", "Chaque rêve devient une aile,", "Pour voler vers des terres nouvelles.", "Oh {keyword}, souffle de l’âme,", "Tu portes l’homme vers la flamme."],
+      ]
+    };
+    const adjectives = ["tendre", "éclatant", "mystérieux", "serein", "ardent", "profond", "lumineux"];
+
+    function generateDynamicPoem(keyword, domain) {
+      if (!keyword) keyword = "rêve";
+      if (!domain) domain = "amour";
+      const template = poemTemplates[domain][Math.floor(Math.random() * poemTemplates[domain].length)];
+      const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+      const poem = template.map(line => line.replace("{keyword}", `${adj} ${keyword}`)).join("\n");
+      console.log("Poème généré :", poem);
+      return poem;
+    }
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let currentPoem = '';
+    let time = 0;
+    let currentAudio = null;
+    let stream = null;
+
+    function resizeCanvas() {
+      canvas.width = Math.min(800, window.innerWidth * 0.9);
+      canvas.height = Math.min(400, window.innerHeight * 0.6);
+      drawScene();
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function drawBackground(theme) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      time += 0.02;
+      if (theme === 'gradient') {
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#ff6bd6');
+        gradient.addColorStop(1, '#00f4ff');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else if (theme === 'waves') {
+        ctx.fillStyle = '#6bd6ff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.lineWidth = 2;
+        for (let y = 0; y < canvas.height; y += 20) {
+          ctx.beginPath();
+          for (let x = 0; x < canvas.width; x += 5) {
+            const wave = Math.sin((x + time * 50) * 0.01 + y * 0.02) * 10;
+            ctx.lineTo(x, y + wave);
+          }
+          ctx.stroke();
+        }
+      } else if (theme === 'stars') {
+        ctx.fillStyle = '#1a1a40';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 100; i++) {
+          const x = Math.random() * canvas.width;
+          const y = Math.random() * canvas.height;
+          const radius = Math.random() * 2;
+          ctx.fillStyle = `rgba(255, 255, 255, ${Math.sin(time + i) * 0.5 + 0.5})`;
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else if (theme === 'clouds') {
+        ctx.fillStyle = '#f0f8ff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 10; i++) {
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.2 + Math.sin(time + i) * 0.1})`;
+          ctx.beginPath();
+          ctx.arc((i * 100 + time * 20) % canvas.width, 50 + i * 30, 50, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else if (theme === 'aurora') {
+        ctx.fillStyle = '#0d1b2a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < canvas.height; i += 10) {
+          const alpha = 0.3 + Math.sin(time + i * 0.02) * 0.2;
+          ctx.fillStyle = `rgba(${50 + i % 100}, ${150 + i % 100}, 255, ${alpha})`;
+          ctx.fillRect(0, i, canvas.width, 10);
+        }
+      } else if (theme === 'fireflies') {
+        ctx.fillStyle = '#1c2526';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 50; i++) {
+          const x = Math.random() * canvas.width;
+          const y = Math.random() * canvas.height;
+          const glow = Math.sin(time + i) * 0.5 + 0.5;
+          ctx.fillStyle = `rgba(255, 255, 0, ${glow})`;
+          ctx.beginPath();
+          ctx.arc(x, y, 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else if (theme === 'rain') {
+        ctx.fillStyle = '#b0c4de';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 100; i++) {
+          const x = Math.random() * canvas.width;
+          const y = (i * 10 + time * 50) % canvas.height;
+          ctx.strokeStyle = `rgba(255, 255, 255, 0.5)`;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x, y + 10);
+          ctx.stroke();
+        }
+      } else if (theme === 'galaxy') {
+        ctx.fillStyle = '#0a0a23';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = `rgba(255, 255, 255, 0.7)`;
+        for (let i = 0; i < 100; i++) {
+          const angle = i * 0.1 + time * 0.2;
+          const radius = i * 2;
+          const x = canvas.width / 2 + Math.cos(angle) * radius;
+          const y = canvas.height / 2 + Math.sin(angle) * radius;
+          ctx.beginPath();
+          ctx.arc(x, y, 1, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else if (theme === 'sunset') {
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        const hue = (Math.sin(time * 0.1) + 1) / 2;
+        gradient.addColorStop(0, `hsl(${hue * 30 + 10}, 80%, 60%)`);
+        gradient.addColorStop(1, `hsl(${hue * 30 + 40}, 80%, 40%)`);
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else if (theme === 'forest') {
+        ctx.fillStyle = '#013220';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < canvas.width; i += 20) {
+          const light = Math.sin(time + i * 0.02) * 20 + 50;
+          ctx.fillStyle = `rgba(144, 238, 144, 0.3)`;
+          ctx.fillRect(i, 0, 20, canvas.height * (light / 100));
+        }
+      }
+    }
+
+    function createParticles() {
+      particles = [];
+      for (let i = 0; i < 30; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 2 + 1,
+          speed: Math.random() * 1 + 0.5
+        });
+      }
+    }
+
+    function drawParticles() {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+        p.y -= p.speed;
+        if (p.y < 0) p.y = canvas.height;
+      });
+    }
+
+    function drawScene() {
+      const theme = document.getElementById('themeSelector').value;
+      drawBackground(theme);
+      drawParticles();
+      if (currentPoem) {
+        ctx.font = `18px 'Segoe UI', Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = ['stars', 'aurora', 'fireflies', 'galaxy', 'forest'].includes(theme) ? '#fff' : '#000';
+        const lines = currentPoem.split('\n');
+        const lineHeight = 22;
+        const startY = canvas.height / 2 - (lines.length - 1) * lineHeight / 2;
+        lines.forEach((line, i) => {
+          ctx.fillText(line, canvas.width / 2, startY + i * lineHeight);
+        });
+      } else {
+        ctx.font = '16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = ['stars', 'aurora', 'fireflies', 'galaxy', 'forest'].includes(theme) ? '#fff' : '#000';
+        ctx.fillText("Entrez un mot-clé et générez !", canvas.width / 2, canvas.height / 2);
+      }
+    }
+
+    const themeAudio = {
+      gradient: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      waves: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      stars: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+      clouds: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      aurora: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      fireflies: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+      rain: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      galaxy: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+      sunset: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      forest: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+    };
+
+    function playAudio(src) {
+      if (currentAudio) currentAudio.pause();
+      currentAudio = new Audio(src);
+      currentAudio.loop = true;
+      currentAudio.volume = 0.3;
+      currentAudio.play().catch(() => console.log("Erreur de lecture audio"));
+    }
+
+    function generatePoem() {
+      const keyword = document.getElementById('keyword').value;
+      const domain = document.getElementById('domainSelector').value;
+      const theme = document.getElementById('themeSelector').value;
+      currentPoem = generateDynamicPoem(keyword, domain);
+      localStorage.setItem('lastPoem', currentPoem);
+      playAudio(themeAudio[theme]);
+      drawScene();
+    }
+
+    function exportImage() {
+      const link = document.createElement('a');
+      link.download = 'poeme.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    function sharePoem() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Mon Poème Visuel',
+          text: currentPoem,
+          url: window.location.href
+        });
+      } else {
+        alert('Partage non supporté.');
+      }
+    }
+
+    function copyPoem() {
+      if (currentPoem) {
+        navigator.clipboard.writeText(currentPoem).then(() => {
+          alert("Votre poème a bien été copié 🥀, poème Yann bot vous remercie 🖐️!");
+        }).catch(() => {
+          alert("Erreur lors de la copie.");
+        });
+      } else {
+        alert("Aucun poème à copier. Générez un poème d'abord !");
+      }
+    }
+
+    function savePoem() {
+      html2canvas(document.querySelector('#canvas')).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'poeme.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+
+    document.getElementById('themeSelector').addEventListener('change', (e) => {
+      document.body.className = `theme-${e.target.value}`;
+      playAudio(themeAudio[e.target.value]);
+      drawScene();
+    });
+
+    function toggleHighContrast() {
+      document.body.classList.toggle('high-contrast');
+      drawScene();
+    }
+
+    function openProfileModal() {
+      const modal = document.getElementById('profileModal');
+      modal.style.display = 'flex';
+      const savedName = localStorage.getItem('profileName') || '';
+      const savedPhoto = localStorage.getItem('profilePhoto') || '';
+      document.getElementById('profileName').value = savedName;
+      const preview = document.getElementById('profilePreview');
+      if (savedPhoto) {
+        preview.src = savedPhoto;
+        preview.style.display = 'block';
+      }
+      updateProfileDisplay();
+      if (document.getElementById('drawer').classList.contains('open')) {
+        toggleDrawer();
+      }
+    }
+
+    function closeProfileModal() {
+      const modal = document.getElementById('profileModal');
+      modal.style.display = 'none';
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        document.getElementById('cameraStream').style.display = 'none';
+      }
+    }
+
+    document.getElementById('profilePhoto').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const preview = document.getElementById('profilePreview');
+          preview.src = reader.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataDataURL(file);
+      }
+    });
+
+    function takePhoto() {
+      const video = document.getElementById('cameraStream');
+      const canvas = document.getElementById('photoCanvas');
+      const preview = document.getElementById('profilePreview');
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((mediaStream) => {
+          stream = mediaStream;
+          video.srcObject = stream;
+          video.style.display = 'block';
+          video.play();
+          setTimeout(() => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            preview.src = canvas.toDataURL('image/png');
+            preview.style.display = 'block';
+            stream.getTracks().forEach(track => track.stop());
+            video.style.display = 'none';
+          }, 3000);
+        })
+        .catch(() => {
+          alert('Caméra non disponible. Essayez d’uploader une photo.');
+        });
+    }
+
+    function saveProfile() {
+      const name = document.getElementById('profileName').value;
+      const photo = document.getElementById('profilePreview').src;
+      if (name) {
+        localStorage.setItem('profileName', name);
+      }
+      if (photo && photo !== window.location.href) {
+        localStorage.setItem('profilePhoto', photo);
+      }
+      updateProfileDisplay();
+      closeProfileModal();
+      alert('Profil sauvegardé !');
+    }
+
+    function updateProfileDisplay() {
+      const name = localStorage.getItem('profileName') || '';
+      const photo = localStorage.getItem('profilePhoto') || '';
+      const display = document.getElementById('profileDisplay');
+      if (name || photo) {
+        display.innerHTML = photo ? `<img src="${photo}" alt="Photo de profil">` : '';
+        display.innerHTML += name ? `Bienvenue, ${name} | ` : '';
+      } else {
+        display.innerHTML = '';
+      }
+    }
+
+    function animate() {
+      drawScene();
+      requestAnimationFrame(animate);
+    }
+
+    createParticles();
+    drawScene();
+    animate();
+    updateProfileDisplay();
+
+    document.querySelectorAll('button, input, select').forEach(el => {
+      el.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') el.click();
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (document.getElementById('profileModal').style.display === 'flex') {
+          closeProfileModal();
+        } else if (document.getElementById('infoModal').style.display === 'flex') {
+          closeInfoModal();
+        } else if (document.getElementById('drawer').classList.contains('open')) {
+          toggleDrawer();
+        }
+      }
+    });
+  </script>
 </body>
-</html>
+    </html>
